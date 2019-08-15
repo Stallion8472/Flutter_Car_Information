@@ -3,14 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum ServiceType{oil, airFilter, tires,a,b,c,d,e,f,g}
 
 class Service{
-  final DateTime date;
+  final Timestamp date;
   final int odometer;
   final ServiceType serviceType;
   final String location;
   final String notes;
+  final String user;
+  final DocumentReference vehicleReference;
   final DocumentReference reference;
 
-  Service(this.date, this.odometer, this.serviceType, this.location, this.notes, {this.reference});
+  Service(this.date, this.odometer, this.serviceType, this.location, this.notes, this.user, this.vehicleReference, {this.reference});
 
   Service.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data, reference: snapshot.reference);
 
@@ -20,11 +22,15 @@ class Service{
         assert(map['serviceType'] != null),
         assert(map['location'] != null),
         assert(map['notes'] != null),
+        assert(map['user'] != null),
+        assert(map['vehicle'] != null),
         date = map['date'],
         odometer = map['odometer'],
         serviceType = stringToServiceType(map['serviceType']),
         location = map['location'],
-        notes = map['notes'];
+        notes = map['notes'],
+        user = map['user'],
+        vehicleReference = map['vehicle'];
 
   static ServiceType stringToServiceType(String type) {
     switch (type) {

@@ -1,25 +1,27 @@
+import 'package:basic_app/AppStateContainer.dart';
+import 'package:basic_app/model/Service.dart';
+import 'package:basic_app/services/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'model/Service.dart';
-
-class LoginScreen extends StatefulWidget{
+class EditServicePage extends StatefulWidget{
 
   final Service service;
 
-  LoginScreen({Key key, @required this.service}) : super(key: key);
+  EditServicePage({Key key, @required this.service}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _EditServicePageState createState() => _EditServicePageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _EditServicePageState extends State<EditServicePage> {
 
   final odometerController = TextEditingController();
   final notesController = TextEditingController();
   final serviceTypeController = ServiceTypeController();
   final locationController = TextEditingController();
-  DateTime dateController = DateTime.now();
+  Timestamp dateController = Timestamp.now();
   DateFormat usFormat = DateFormat('MM-dd-yyyy');
 
   @override void initState() {
@@ -74,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                           onTap: showDate,
                           behavior: HitTestBehavior.translucent,
-                          child: Text(usFormat.format(dateController)),
+                          child: Text(usFormat.format(dateController.toDate())),
                         )
                       ],
                     ),),
@@ -114,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _saveAndClose(BuildContext context){
-    Service newService = Service(dateController, int.parse(odometerController.text), serviceTypeController.value, locationController.text, notesController.text, reference: widget.service.reference);
+    Service newService = Service(dateController, int.parse(odometerController.text), serviceTypeController.value, locationController.text, notesController.text, Auth.userEmail, AppStateContainer.of(context).state.selectedVehicle ,reference: widget.service.reference);
     Navigator.of(context).pop(newService);
   }
 
@@ -180,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     selectedDate.then((chosenDate) => setState((){
-      dateController = chosenDate;
+      dateController = Timestamp(chosenDate.second, chosenDate.second*1000);
     }));
   }
 }

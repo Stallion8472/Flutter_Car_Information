@@ -1,11 +1,11 @@
+import 'package:basic_app/AppStateContainer.dart';
+import 'package:basic_app/pages/LoginScreen.dart';
+import 'package:basic_app/pages/SplashScreen.dart';
+import 'package:basic_app/pages/VehicleMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'LoginScreen.dart';
-import 'SplashScreen.dart';
-import 'VehicleServicesPage.dart';
-
-void main() => runApp(MyApp());
+void main() => runApp(AppStateContainer(child: MyApp()));
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,11 +26,10 @@ Widget _handleCurrentScreen() {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          //return SplashScreen();
-          return VehicleHistory();
+          return SplashScreen();
         } else {
           if (snapshot.hasData) {
-            return VehicleHistory();
+            return VehicleMainPage();
           }
           return LoginScreen();
         }
