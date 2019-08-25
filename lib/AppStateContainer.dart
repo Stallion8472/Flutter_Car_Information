@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:basic_app/model/AppState.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AppStateContainer extends StatefulWidget {
   
@@ -27,6 +31,42 @@ class _AppStateContainerState extends State<AppStateContainer> {
   @override
   void initState() {
     super.initState();
+    loadAppStateFromJSON();
+  }
+
+  @override
+  void dispose(){
+    writeAppStateToJSON(state);
+    super.dispose();
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/AppState.json');
+  }
+
+  Future<File> writeAppStateToJSON(AppState appState) async {
+    final file = await _localFile;
+    return file.writeAsString(jsonEncode({"user": appState.loggedInUser, "vehicle": appState.selectedVehicle}));
+  }
+
+  loadAppStateFromJSON() async{
+    final file = await _localFile;
+    var fileExists = await file.exists();
+    if(fileExists){
+      setState(() {
+        state = AppState.fromJson(jsonDecode(file.readAsStringSync()));  
+      });
+    }
+    else{
+      writeAppStateToJSON(AppState("null@email.com", ""));
+      loadAppStateFromJSON();
+    }
   }
 
   void updateState(AppState appState){

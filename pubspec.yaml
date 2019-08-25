@@ -28,6 +28,8 @@ dependencies:
   rxdart: ^0.22.1+1
   cloud_firestore: ^0.8.2
   firebase_auth: ^0.5.12
+  path_provider: ^1.2.0
+  font_awesome_flutter: ^8.5.0
 
 dev_dependencies:
   flutter_test:

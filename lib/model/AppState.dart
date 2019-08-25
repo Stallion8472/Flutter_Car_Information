@@ -1,12 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 class AppState {
-  FirebaseUser loggedInUser;
-  DocumentReference selectedVehicle;
+  String loggedInUser;
+  String selectedVehicle;
 
-  AppState(FirebaseUser firebaseUser, DocumentReference documentReference){
-    loggedInUser = firebaseUser;
-    selectedVehicle = documentReference;
+  AppState(this.loggedInUser, this.selectedVehicle);
+
+  factory AppState.fromJson(Map<String, dynamic> json){
+    String userEmail = json['user'];
+    String vehiclePath = json['vehicle'];
+
+    return AppState(userEmail, vehiclePath);
   }
 }

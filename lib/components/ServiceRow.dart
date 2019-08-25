@@ -1,5 +1,6 @@
 import 'package:basic_app/model/Service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class ServiceRow extends StatelessWidget {
@@ -39,10 +40,10 @@ class ServiceRow extends StatelessWidget {
         return Icons.ac_unit;
         break;
       case ServiceType.oil:
-        return Icons.access_alarm;
+        return FontAwesomeIcons.oilCan;
         break;
       case ServiceType.tires:
-        return Icons.accessibility;
+        return FontAwesomeIcons.tired;
         break;
       case ServiceType.a:
         // TODO: Handle this case.

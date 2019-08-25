@@ -19,8 +19,8 @@ class ServicesBloc{
     _services.sink.add(services);
   }
 
-  updateService(Service service, {String documentID}) {
-    _repository.updateService(service, documentID: documentID);
+  updateService(Service service) {
+    _repository.updateService(service);
   }
 
   dispose() {

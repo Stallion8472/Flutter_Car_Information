@@ -2,7 +2,7 @@ import 'package:basic_app/AppStateContainer.dart';
 import 'package:basic_app/model/AppState.dart';
 import 'package:basic_app/model/Vehicle.dart';
 import 'package:basic_app/pages/EditVehiclePage.dart';
-import 'package:basic_app/services/auth.dart';
+import 'package:basic_app/pages/VehicleServices.dart';
 import 'package:basic_app/services/vehicleInformationBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,12 +17,17 @@ class VehicleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: _setColor(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: () => AppStateContainer.of(context)
-              .updateState(AppState(Auth.user, vehicle.reference)),
+          onTap: () => {
+            AppStateContainer.of(context).updateState(AppState(AppStateContainer.of(context).state.loggedInUser, vehicle.reference.documentID)),
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        VehicleServices(vehicle)))
+          },
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -78,15 +83,6 @@ class VehicleRow extends StatelessWidget {
       } else {
         _vehicleInformationBloc.updateVehicle(result);
       }
-    }
-  }
-
-  Color _setColor(BuildContext context) {
-    if (AppStateContainer.of(context).state.selectedVehicle ==
-        vehicle.reference) {
-      return Colors.black12;
-    } else {
-      return Colors.white;
     }
   }
 }

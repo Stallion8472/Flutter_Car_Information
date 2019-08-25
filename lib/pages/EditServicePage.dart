@@ -1,6 +1,6 @@
 import 'package:basic_app/AppStateContainer.dart';
 import 'package:basic_app/model/Service.dart';
-import 'package:basic_app/services/auth.dart';
+import 'package:basic_app/services/servicesBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,8 +8,9 @@ import 'package:intl/intl.dart';
 class EditServicePage extends StatefulWidget{
 
   final Service service;
+  final ServicesBloc _servicesBloc;
 
-  EditServicePage({Key key, @required this.service}) : super(key: key);
+  EditServicePage(this.service, this._servicesBloc, {Key key}) : super(key: key);
 
   @override
   _EditServicePageState createState() => _EditServicePageState();
@@ -102,6 +103,7 @@ class _EditServicePageState extends State<EditServicePage> {
                   ),
                   TextField(
                     controller: notesController,
+                    maxLines: 5,
                     decoration: InputDecoration(
                         labelText: 'Notes'
                     ),
@@ -116,8 +118,9 @@ class _EditServicePageState extends State<EditServicePage> {
   }
 
   void _saveAndClose(BuildContext context){
-    Service newService = Service(dateController, int.parse(odometerController.text), serviceTypeController.value, locationController.text, notesController.text, Auth.userEmail, AppStateContainer.of(context).state.selectedVehicle ,reference: widget.service.reference);
-    Navigator.of(context).pop(newService);
+    Service newService = Service(dateController, int.parse(odometerController.text), serviceTypeController.value, locationController.text, notesController.text, AppStateContainer.of(context).state.loggedInUser, Firestore.instance.document(AppStateContainer.of(context).state.selectedVehicle), reference: widget.service.reference ?? null);
+    widget._servicesBloc.updateService(newService);
+    Navigator.of(context).pop();
   }
 
   Future<bool> _onWillPop() {

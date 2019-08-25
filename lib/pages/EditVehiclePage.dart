@@ -1,5 +1,6 @@
+import 'package:basic_app/AppStateContainer.dart';
 import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/services/auth.dart';
+import 'package:basic_app/services/vehicleInformationBloc.dart';
 import 'package:flutter/material.dart';
 
 class EditVehiclePage extends StatefulWidget{
@@ -17,6 +18,8 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
   final yearController = TextEditingController();
   final makeController = TextEditingController();
   final modelController = TextEditingController();
+
+  final _vehicleInformationBloc = VehicleInformationBloc();
 
   @override void initState() {
     yearController.text = widget.vehicle.year.toString();
@@ -82,8 +85,14 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
   }
 
   void _saveAndClose(BuildContext context){
-    Vehicle newVehicle = Vehicle(Auth.userEmail, int.parse(yearController.text), makeController.text, modelController.text, reference: widget.vehicle.reference);
-    Navigator.of(context).pop(newVehicle);
+    Vehicle newVehicle = Vehicle(AppStateContainer.of(context).state.loggedInUser, int.parse(yearController.text), makeController.text, modelController.text, reference: widget.vehicle.reference);
+    if (newVehicle.reference != null) {
+        _vehicleInformationBloc.updateVehicle(newVehicle,
+            documentID: newVehicle.reference.documentID);
+      } else {
+        _vehicleInformationBloc.updateVehicle(newVehicle);
+      }
+    Navigator.of(context).pop();
   }
 
   Future<bool> _onWillPop() {

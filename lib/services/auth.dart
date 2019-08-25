@@ -2,13 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth {
   static String userEmail = "";
-  static FirebaseUser user;
 
   static Future<String> signIn(String email, String password) async {
     FirebaseUser user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
         userEmail = user.email;
-        user = user;
     return user.uid;
   }
 
@@ -16,12 +14,10 @@ class Auth {
     FirebaseUser user = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
         userEmail = user.email;
-        user = user;
     return user.uid;
   }
   static void signOut() {
     FirebaseAuth.instance.signOut();
     userEmail = "";
-    user = null;
   }
 }
