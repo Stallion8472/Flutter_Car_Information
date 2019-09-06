@@ -11,32 +11,28 @@ class ServiceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Icon(getIcon(service.serviceType)),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text('Type: ${service.serviceType.toString().split('.').last}'),
-            Text(
-                'Date: ${usFormat.format(service.date.toDate())}',),
-          ],
+    return Card(
+      color: Colors.white,
+      margin: EdgeInsets.all(3.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: ListTile(
+          leading: Icon(getIcon(service.serviceType)),
+          title: Column(
+            children: <Widget>[
+              Text('Type: ${service.serviceType.toString().split('.').last}'),
+              Text('Date: ${usFormat.format(service.date.toDate())}'),
+            ],
+          ),
+          trailing: Text('Odometer: ${service.odometer.toString()}'),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text('Odometer: ${service.odometer.toString()}'),
-            Text('Location: ${service.location}'),
-          ],
-        ),
-      ],
+      ),
     );
   }
 
-  IconData getIcon(ServiceType serviceType){
-    switch(serviceType){
-      case ServiceType.airFilter: 
+  IconData getIcon(ServiceType serviceType) {
+    switch (serviceType) {
+      case ServiceType.airFilter:
         return Icons.ac_unit;
         break;
       case ServiceType.oil:

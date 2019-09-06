@@ -17,6 +17,7 @@ class VehicleServices extends StatelessWidget {
   build(BuildContext context) {
     _servicesBloc.getServcies();
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: StreamBuilder(
           stream: _servicesBloc.servicesObservable,
           builder: (context, AsyncSnapshot<List<Service>> snapshot) {
@@ -69,12 +70,10 @@ class VehicleServices extends StatelessWidget {
       );
     } else {
       return SliverChildBuilderDelegate(
-        (context, index) => Padding(
-            padding: EdgeInsets.all(10.0),
-            child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                child: ServiceRow(service: data[index]),
-                onTap: () => _editService(context, service: data[index]))),
+        (context, index) => GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: ServiceRow(service: data[index]),
+            onTap: () => _editService(context, service: data[index])),
         childCount: snapshot.data.length,
       );
     }

@@ -3,8 +3,7 @@ import 'package:basic_app/model/Vehicle.dart';
 import 'package:basic_app/services/vehicleInformationBloc.dart';
 import 'package:flutter/material.dart';
 
-class EditVehiclePage extends StatefulWidget{
-
+class EditVehiclePage extends StatefulWidget {
   final Vehicle vehicle;
 
   EditVehiclePage({Key key, @required this.vehicle}) : super(key: key);
@@ -14,20 +13,22 @@ class EditVehiclePage extends StatefulWidget{
 }
 
 class _EditVehiclePageState extends State<EditVehiclePage> {
-
   final yearController = TextEditingController();
   final makeController = TextEditingController();
   final modelController = TextEditingController();
 
   final _vehicleInformationBloc = VehicleInformationBloc();
 
-  @override void initState() {
+  @override
+  void initState() {
     yearController.text = widget.vehicle.year.toString();
     makeController.text = widget.vehicle.make;
     modelController.text = widget.vehicle.model;
     super.initState();
   }
-  @override void dispose() {
+
+  @override
+  void dispose() {
     yearController.dispose();
     makeController.dispose();
     modelController.dispose();
@@ -40,7 +41,11 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(this.widget.vehicle.year.toString() + " " + this.widget.vehicle.make + " " + this.widget.vehicle.model),
+          title: Text(this.widget.vehicle.year.toString() +
+              " " +
+              this.widget.vehicle.make +
+              " " +
+              this.widget.vehicle.model),
           actions: <Widget>[
             IconButton(
               onPressed: () {
@@ -50,30 +55,29 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
             )
           ],
         ),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
             child: Container(
-              child: Column(
+              color: Colors.white,
+              child: ListView(
                 children: <Widget>[
                   TextField(
                     controller: yearController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        labelText: 'Year'
-                    ),
+                    decoration: InputDecoration(labelText: 'Year'),
                   ),
                   TextField(
                     controller: makeController,
-                    decoration: InputDecoration(
-                        labelText: 'Make'
-                    ),
+                    decoration: InputDecoration(labelText: 'Make'),
                   ),
                   TextField(
                     controller: modelController,
-                    decoration: InputDecoration(
-                        labelText: 'Model'
-                    ),
+                    decoration: InputDecoration(labelText: 'Model'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Comments'),
                   ),
                 ],
               ),
@@ -84,35 +88,38 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
     );
   }
 
-  void _saveAndClose(BuildContext context){
-    Vehicle newVehicle = Vehicle(AppStateContainer.of(context).state.loggedInUser, int.parse(yearController.text), makeController.text, modelController.text, reference: widget.vehicle.reference);
+  void _saveAndClose(BuildContext context) {
+    Vehicle newVehicle = Vehicle(
+        AppStateContainer.of(context).state.loggedInUser,
+        int.parse(yearController.text),
+        makeController.text,
+        modelController.text,
+        reference: widget.vehicle.reference);
     if (newVehicle.reference != null) {
-        _vehicleInformationBloc.updateVehicle(newVehicle,
-            documentID: newVehicle.reference.documentID);
-      } else {
-        _vehicleInformationBloc.updateVehicle(newVehicle);
-      }
+      _vehicleInformationBloc.updateVehicle(newVehicle,
+          documentID: newVehicle.reference.documentID);
+    } else {
+      _vehicleInformationBloc.updateVehicle(newVehicle);
+    }
     Navigator.of(context).pop();
   }
 
   Future<bool> _onWillPop() {
-      return showDialog(
-        context: context,
-        builder: (context) =>
-          AlertDialog(
-            title: Text('Discard your changes?'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('No'),
-                onPressed: () => Navigator.of(context).pop(false),
-              ),
-              FlatButton(
-                child: Text('Yes'),
-                onPressed: () => Navigator.of(context).pop(true),
-              ),
-            ],
-          )
-      ) ?? false;
-    }
-
+    return showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text('Discard your changes?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () => Navigator.of(context).pop(false),
+                    ),
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: () => Navigator.of(context).pop(true),
+                    ),
+                  ],
+                )) ??
+        false;
+  }
 }

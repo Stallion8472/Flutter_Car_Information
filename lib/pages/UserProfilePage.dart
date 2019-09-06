@@ -8,6 +8,7 @@ class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           title: Text("User Name",
@@ -40,100 +41,126 @@ class UserProfilePage extends StatelessWidget {
   List<Widget> _userBodyWidgets(BuildContext context) {
     List<Widget> newList = [
       Padding(
-        padding: const EdgeInsets.fromLTRB(15, 8, 0, 0),
-        child: Text("User"),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.all(8.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            color: Colors.grey[200],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                FlatButton(
-                  child: Text('Name'),
-                  onPressed: () {},
-                ),
-                FlatButton(
-                  child: Text('Email'),
-                  onPressed: () {},
-                ),
-                FlatButton(
-                  child: Text('Date of Birth'),
-                  onPressed: () {},
-                ),
-                FlatButton(
-                  child: Text('Default Address'),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-        child: Text("Theme"),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            color: Colors.grey[200],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                FlatButton(
-                  child: Text('Change Theme'),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-        child: Text("Admin"),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            color: Colors.grey[200],
+            color: Colors.white,
             child: Column(
               children: <Widget>[
                 Container(
-                  width: MediaQuery.of(context).size.width,
                   height: 50,
                   child: SizedBox.expand(
-                    child: FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.highlight_off),
-                          Text('Sign Out'),
-                        ],
-                      ),
-                      onPressed: () => _signOut(context),
+                    child: ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text('Name'),
                     ),
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width,
+                  height: 1,
+                  color: Colors.black,
+                  width: MediaQuery.of(context).size.width -
+                      MediaQuery.of(context).size.width / 5,
+                ),
+                Container(
                   height: 50,
                   child: SizedBox.expand(
-                    child: FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.delete_forever),
-                          Text('Delete Account'),
-                        ],
-                      ),
-                      onPressed: () => {},
+                    child: ListTile(
+                      leading: Icon(Icons.email),
+                      title: Text('Email'),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.black,
+                  width: MediaQuery.of(context).size.width -
+                      MediaQuery.of(context).size.width / 5,
+                ),
+                Container(
+                  height: 50,
+                  child: SizedBox.expand(
+                    child: ListTile(
+                      leading: Icon(Icons.backup),
+                      title: Text('Date of Birth'),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.black,
+                  width: MediaQuery.of(context).size.width -
+                      MediaQuery.of(context).size.width / 5,
+                ),
+                Container(
+                  height: 50,
+                  child: SizedBox.expand(
+                    child: ListTile(
+                      leading: Icon(Icons.home),
+                      title: Text('Default Address'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  height: 50,
+                  child: SizedBox.expand(
+                    child: ListTile(
+                      leading: Icon(Icons.theaters),
+                      title: Text('Change Theme'),
+                      onTap: () => {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 50,
+                  child: SizedBox.expand(
+                    child: ListTile(
+                      leading: Icon(Icons.highlight_off),
+                      title: Text('Sign Out'),
+                      onTap: () => _signOut(context),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 1,
+                  color: Colors.black,
+                  width: MediaQuery.of(context).size.width -
+                      MediaQuery.of(context).size.width / 5,
+                ),
+                Container(
+                  height: 50,
+                  child: SizedBox.expand(
+                    child: ListTile(
+                      leading: Icon(Icons.delete_forever),
+                      title: Text('Delete Account'),
                     ),
                   ),
                 ),

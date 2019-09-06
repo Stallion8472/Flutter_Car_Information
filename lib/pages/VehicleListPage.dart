@@ -15,13 +15,8 @@ class VehicleListPage extends StatelessWidget {
       stream: _vehicleInformationBloc.vehiclesObservable,
       builder: (context, AsyncSnapshot<List<Vehicle>> snapshot) {
         if (snapshot.hasData) {
-          return ListView.separated(
-            separatorBuilder: (BuildContext context, int index) {
-              return Container(
-                color: Colors.black,
-                height: 1,
-              );
-            },
+          return ListView.builder(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
             itemCount: snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
               if(index == 0 && AppStateContainer.of(context).state.selectedVehicle == ""){

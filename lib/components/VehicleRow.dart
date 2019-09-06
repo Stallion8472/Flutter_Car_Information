@@ -16,58 +16,66 @@ class VehicleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    return Card(
+        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () => {
-            AppStateContainer.of(context).updateState(AppState(AppStateContainer.of(context).state.loggedInUser, vehicle.reference.documentID)),
+            AppStateContainer.of(context).updateState(AppState(
+                AppStateContainer.of(context).state.loggedInUser,
+                vehicle.reference.documentID)),
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) =>
                         VehicleServices(vehicle)))
           },
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                      Text("Year: ",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold)),
-                      Text(vehicle.year.toString() ?? "YEAR",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w300)),
-                    ]),
-                    Row(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("Make: ",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold)),
-                        Text(vehicle.make ?? "MAKE ",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w300))
+                        Row(children: <Widget>[
+                          Text("Year: ",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold)),
+                          Text(vehicle.year.toString() ?? "YEAR",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w300)),
+                        ]),
+                        Row(
+                          children: <Widget>[
+                            Text("Make: ",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text(vehicle.make ?? "MAKE ",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.w300))
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text("Model: ",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text(vehicle.model ?? "MODEL",
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.w300))
+                          ],
+                        )
                       ],
                     ),
-                    Row(
-                      children: <Widget>[
-                        Text("Model: ",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold)),
-                        Text(vehicle.model ?? "MODEL",
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w300))
-                      ],
-                    )
-                  ],
-                ),
-                IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => _editVehicle(context, vehicle: vehicle)),
-              ]),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () => _editVehicle(context, vehicle: vehicle)),
+                ]),
+          ),
         ));
   }
 
