@@ -13,153 +13,149 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordTextController = TextEditingController();
   final passwordConfirmTextController = TextEditingController();
 
-  var isLoginConentVisbile = false;
-  var isSignUpContentVisible = false;
-  var isLoginButtonVisible = true;
-  var isSignUpButtonVisible = true;
+  var isLogin = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Car App")),
-      body: Center(
-        child: Form(
-          child: Column(
-            children: <Widget>[
-              Spacer(
-                flex: 1,
+      body: Form(
+        child: Column(
+          children: <Widget>[
+            Spacer(
+              flex: 1,
+            ),
+            Text(
+              "Car App",
+              style: TextStyle(fontSize: 58),
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            _loginWidget(),
+            Spacer(
+              flex: 2,
+            ),
+            _changeLoginSignUpStateButton(),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 15,
+              child: SizedBox.expand(
+                child: _loginSignUpButton(),
               ),
-              Visibility(
-                visible: isLoginButtonVisible,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: RaisedButton(
-                          child: Text("Login",
-                              style: TextStyle(
-                                  fontSize: 45, fontWeight: FontWeight.bold)),
-                          color: Colors.blue[400],
-                          onPressed: () {
-                            setState(() {
-                              isLoginConentVisbile = !isLoginConentVisbile;
-                              isSignUpButtonVisible = !isSignUpButtonVisible;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: isLoginConentVisbile,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            child: TextFormField(
-                              controller: userNameTextController,
-                              decoration:
-                                  InputDecoration(labelText: "Username"),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          Padding(
-                            child: TextFormField(
-                              controller: passwordTextController,
-                              decoration:
-                                  InputDecoration(labelText: "Password"),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          RaisedButton(
-                            child: Text("Login"),
-                            color: Colors.blue[200],
-                            onPressed: () {
-                              signIn(context);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: isLoginButtonVisible && isSignUpButtonVisible,
-                child: Spacer(
-                  flex: 1,
-                ),
-              ),
-              Visibility(
-                visible: isSignUpButtonVisible,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: RaisedButton(
-                          child: Text("Sign Up",
-                              style: TextStyle(
-                                  fontSize: 45, fontWeight: FontWeight.bold)),
-                          color: Colors.orange[400],
-                          onPressed: () {
-                            setState(() {
-                              isSignUpContentVisible = !isSignUpContentVisible;
-                              isLoginButtonVisible = !isLoginButtonVisible;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: isSignUpContentVisible,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            child: TextFormField(
-                              controller: userNameTextController,
-                              decoration:
-                                  InputDecoration(labelText: "Username"),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          Padding(
-                            child: TextFormField(
-                              controller: passwordTextController,
-                              decoration:
-                                  InputDecoration(labelText: "Password"),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          Padding(
-                            child: TextFormField(
-                              controller: passwordConfirmTextController,
-                              decoration: InputDecoration(
-                                  labelText: "Confirm Password"),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          RaisedButton(
-                              child: Text("Sign Up"),
-                              color: Colors.orange[200],
-                              onPressed: () {
-                                signUp(context);
-                              })
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Spacer(
-                flex: 1,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _changeLoginSignUpStateButton() {
+    if (isLogin) {
+      return MaterialButton(
+          child: Text("New? Sign Up"),
+          onPressed: () => setState(() {
+                isLogin = !isLogin;
+              }));
+    } else {
+      return MaterialButton(
+          child: Text("Returning User? Log in"),
+          onPressed: () => setState(() {
+                isLogin = !isLogin;
+              }));
+    }
+  }
+
+  Widget _loginSignUpButton() {
+    if (isLogin) {
+      return RaisedButton(
+          child: Text("Login"),
+          color: Colors.blue[200],
+          onPressed: () {
+            signIn(context);
+          });
+    } else {
+      return RaisedButton(
+          child: Text("Sign Up"),
+          color: Colors.orange[200],
+          onPressed: () {
+            signUp(context);
+          });
+    }
+  }
+
+  Widget _loginWidget() {
+    if (isLogin) {
+      return Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text("Login",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              Padding(
+                child: TextFormField(
+                  controller: userNameTextController,
+                  decoration: InputDecoration(labelText: "Username"),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+              Padding(
+                child: TextFormField(
+                  controller: passwordTextController,
+                  decoration: InputDecoration(labelText: "Password"),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text("Sign Up",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              Padding(
+                child: TextFormField(
+                  controller: userNameTextController,
+                  decoration: InputDecoration(labelText: "Username"),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+              Padding(
+                child: TextFormField(
+                  controller: passwordTextController,
+                  decoration: InputDecoration(labelText: "Password"),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+              Padding(
+                child: TextFormField(
+                  controller: passwordConfirmTextController,
+                  decoration: InputDecoration(labelText: "Confirm Password"),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
   }
 
   signIn(BuildContext context) async {
