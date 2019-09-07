@@ -14,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordConfirmTextController = TextEditingController();
 
   var isLogin = true;
+  var rememberUser = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             _loginWidget(),
             Spacer(
-              flex: 2,
+              flex: 1,
             ),
             _changeLoginSignUpStateButton(),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 15,
+              height: MediaQuery.of(context).size.height / 12,
               child: SizedBox.expand(
                 child: _loginSignUpButton(),
               ),
@@ -52,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _changeLoginSignUpStateButton() {
     if (isLogin) {
       return MaterialButton(
-          child: Text("New? Sign Up"),
+          child: Text("New User? Sign Up"),
           onPressed: () => setState(() {
                 isLogin = !isLogin;
               }));
@@ -87,15 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isLogin) {
       return Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Text("Login",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
-            ),
-          ),
           Column(
             children: <Widget>[
               Padding(
@@ -114,20 +106,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text("Remember Me"),
+                  Checkbox(
+                      value: rememberUser,
+                      onChanged: (bool newValue) {
+                        setState(() {
+                          rememberUser = !rememberUser;
+                        });
+                      }),
+                ],
+              ),
+              FlatButton(
+                child: Text("Forgot Password?"),
+                onPressed: () => {},
+              ),
+            ],
+          ),
         ],
       );
     } else {
       return Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Text("Sign Up",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
-            ),
-          ),
           Column(
             children: <Widget>[
               Padding(
