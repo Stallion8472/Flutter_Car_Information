@@ -1,9 +1,9 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/components/ServiceRow.dart';
-import 'package:basic_app/model/Service.dart';
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/pages/EditServicePage.dart';
-import 'package:basic_app/services/servicesBloc.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/components/ServiceRow.dart';
+import 'package:Car_Maintenance/model/Service.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
+import 'package:Car_Maintenance/pages/EditServicePage.dart';
+import 'package:Car_Maintenance/services/servicesBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +15,7 @@ class VehicleServices extends StatelessWidget {
 
   @override
   build(BuildContext context) {
-    _servicesBloc.getServcies();
+    _servicesBloc.getServices(AppStateContainer.of(context).state.loggedInUser);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: StreamBuilder(
@@ -52,7 +52,7 @@ class VehicleServices extends StatelessWidget {
       AsyncSnapshot<List<Service>> snapshot, BuildContext context) {
     List<Service> data = List();
     for (var service in snapshot.data) {
-      if (service.vehicleReference.documentID ==
+      if (service.vehicleReference.path ==
           AppStateContainer.of(context).state.selectedVehicle) {
         data.add(service);
         data.sort((a, b) => a.odometer.compareTo(b.odometer));
@@ -60,12 +60,13 @@ class VehicleServices extends StatelessWidget {
     }
     if (data.length == 0) {
       return SliverChildBuilderDelegate(
-        (context, index) => Center(
+        (context, index) => Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: Text(
-          "No service have been added for the selected vehicle",
-          style: TextStyle(fontSize: 35),
-          textAlign: TextAlign.center,
-        )),
+              "No service have been added for the selected vehicle",
+              style: TextStyle(fontSize: 30),
+              textAlign: TextAlign.center,
+            )),
         childCount: 1,
       );
     } else {
@@ -80,26 +81,20 @@ class VehicleServices extends StatelessWidget {
   }
 
   _editService(BuildContext context, {Service service}) async {
-    (service != null)
+    var returnedService = (service != null)
         ? await Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditServicePage(service, _servicesBloc)))
-        : await Navigator.push(
-            context,
-            MaterialPageRoute(
                 builder: (context) => EditServicePage(
-                    Service(
-                        Timestamp.now(),
-                        0,
-                        ServiceType.airFilter,
-                        '',
-                        '',
-                        AppStateContainer.of(context).state.loggedInUser,
-                        Firestore.instance.document(
-                            AppStateContainer.of(context)
-                                .state
-                                .selectedVehicle)),
-                    _servicesBloc)));
+                      service: service,
+                    )))
+        : await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditServicePage()));
+    if (returnedService is Service) {
+      _servicesBloc.updateService(returnedService);
+    }
+    else if(returnedService is DocumentReference){
+      _servicesBloc.deleteService(returnedService);
+    }
   }
 }

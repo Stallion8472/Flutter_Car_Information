@@ -1,8 +1,8 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/pages/EditVehiclePage.dart';
-import 'package:basic_app/pages/UserProfilePage.dart';
-import 'package:basic_app/pages/VehicleListPage.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
+import 'package:Car_Maintenance/pages/EditVehiclePage.dart';
+import 'package:Car_Maintenance/pages/UserProfilePage.dart';
+import 'package:Car_Maintenance/pages/VehicleListPage.dart';
 import 'package:flutter/material.dart';
 
 class VehicleMainPage extends StatelessWidget {

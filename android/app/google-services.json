@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:625636116211:android:33ed16461460f154",
         "android_client_info": {
-          "package_name": "com.example.basic_app"
+          "package_name": "com.example.flutter_car_information"
         }
       },
       "oauth_client": [

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:basic_app/model/AppState.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'model/AppState.dart';
+
 class AppStateContainer extends StatefulWidget {
-  
   final AppState state;
   final Widget child;
 
@@ -18,7 +18,8 @@ class AppStateContainer extends StatefulWidget {
 
   static _AppStateContainerState of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedStateContainer)
-            as _InheritedStateContainer).data;
+            as _InheritedStateContainer)
+        .data;
   }
 
   @override
@@ -35,7 +36,7 @@ class _AppStateContainerState extends State<AppStateContainer> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     writeAppStateToJSON(state);
     super.dispose();
   }
@@ -52,27 +53,24 @@ class _AppStateContainerState extends State<AppStateContainer> {
 
   Future<File> writeAppStateToJSON(AppState appState) async {
     final file = await _localFile;
-    return file.writeAsString(jsonEncode({"user": appState.loggedInUser, "vehicle": appState.selectedVehicle}));
+    return file.writeAsString(jsonEncode(
+        {"user": appState.loggedInUser, "vehicle": appState.selectedVehicle}));
   }
 
-  loadAppStateFromJSON() async{
+  loadAppStateFromJSON() async {
     final file = await _localFile;
     var fileExists = await file.exists();
-    if(fileExists){
+    if (fileExists) {
       setState(() {
-        state = AppState.fromJson(jsonDecode(file.readAsStringSync()));  
+        state = AppState.fromJson(jsonDecode(file.readAsStringSync()));
       });
-    }
-    else{
-      writeAppStateToJSON(AppState("null@email.com", ""));
-      loadAppStateFromJSON();
     }
   }
 
-  void updateState(AppState appState){
-    if(state != appState){
+  void updateState(AppState appState) {
+    if (state != appState) {
       setState(() {
-       state = appState; 
+        state = appState;
       });
     }
   }

@@ -1,4 +1,4 @@
-import 'package:basic_app/services/auth.dart';
+import 'package:Car_Maintenance/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,11 +15,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var isLogin = true;
   var rememberUser = false;
+  final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState(){
+    super.initState();
+    //userNameTextController.text = AppStateContainer.of(context).state.loggedInUser ?? "";
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
+        key: _formKey,
         child: Column(
           children: <Widget>[
             Spacer(
@@ -71,9 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return RaisedButton(
           child: Text("Login"),
           color: Colors.blue[200],
-          onPressed: () {
-            signIn(context);
-          });
+          onPressed: () => {signIn(context)});
     } else {
       return RaisedButton(
           child: Text("Sign Up"),
@@ -93,13 +98,27 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 child: TextFormField(
                   controller: userNameTextController,
-                  decoration: InputDecoration(labelText: "Username"),
+                  validator: (value) {
+                    if (!RegExp(
+                            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                        .hasMatch(value)) {
+                      return "Pleae enter a correct email";
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(labelText: "Email"),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10),
               ),
               Padding(
                 child: TextFormField(
                   controller: passwordTextController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Please enter a password";
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(labelText: "Password"),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -137,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 child: TextFormField(
                   controller: userNameTextController,
-                  decoration: InputDecoration(labelText: "Username"),
+                  decoration: InputDecoration(labelText: "Email"),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10),
               ),
@@ -163,12 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   signIn(BuildContext context) async {
-    if (userNameTextController.text != "" &&
-        passwordTextController.text != "") {
+    if (_formKey.currentState.validate()) {
       await Auth.signIn(
-          userNameTextController.text, passwordTextController.text);
-    } else {
-      //display error
+              userNameTextController.text, passwordTextController.text, context);
     }
   }
 

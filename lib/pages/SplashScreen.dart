@@ -6,16 +6,18 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          //title: Text(title),
-          ),
-      body: _buildBody(context),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody() {
     return Center(
-      child: Text("MyCarID"),
+      child: Column(
+        children: <Widget>[
+          Text("MyCarID"),
+          Icon(Icons.directions_car)
+        ],
+      ),
     );
   }
 }

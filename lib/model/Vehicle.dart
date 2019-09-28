@@ -1,23 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Vehicle{
-  final String owner;
-  final int year;
-  final String make;
-  final String model;
-  final DocumentReference reference;
+  String user;
+  int year;
+  String make;
+  String model;
+  DocumentReference reference;
 
-  Vehicle(this.owner, this.year, this.make, this.model, {this.reference});
+  Vehicle(this.user, this.year, this.make, this.model, {this.reference});
 
   Vehicle.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data, reference: snapshot.reference);
 
   Vehicle.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['owner'] != null),
+      : assert(map['user'] != null),
         assert(map['year'] != null),
         assert(map['make'] != null),
         assert(map['model'] != null),
-        owner = map['owner'],
+        user = map['user'],
         year = map['year'],
         make = map['make'],
         model = map['model'];
+
+        bool operator ==(o) => o is Vehicle && o.make == make && o.model == model && o.user == user && o.year == year;
+        int get hashCode => this.hashCode;
 }

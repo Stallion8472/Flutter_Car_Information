@@ -1,6 +1,5 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/services/vehicleInformationBloc.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
 import 'package:flutter/material.dart';
 
 class EditVehiclePage extends StatefulWidget {
@@ -16,8 +15,6 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
   final yearController = TextEditingController();
   final makeController = TextEditingController();
   final modelController = TextEditingController();
-
-  final _vehicleInformationBloc = VehicleInformationBloc();
 
   @override
   void initState() {
@@ -47,6 +44,12 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
               " " +
               this.widget.vehicle.model),
           actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                _deleteVehicle(context);
+              },
+              icon: Icon(Icons.delete),
+            ),
             IconButton(
               onPressed: () {
                 _saveAndClose(context);
@@ -88,23 +91,44 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
     );
   }
 
-  void _saveAndClose(BuildContext context) {
-    Vehicle newVehicle = Vehicle(
+  Vehicle createVehicle(){
+    return Vehicle(
         AppStateContainer.of(context).state.loggedInUser,
         int.parse(yearController.text),
         makeController.text,
         modelController.text,
         reference: widget.vehicle.reference);
-    if (newVehicle.reference != null) {
-      _vehicleInformationBloc.updateVehicle(newVehicle,
-          documentID: newVehicle.reference.documentID);
-    } else {
-      _vehicleInformationBloc.updateVehicle(newVehicle);
-    }
-    Navigator.of(context).pop();
+  }
+
+  void _saveAndClose(BuildContext context) {
+    var newVehicle = createVehicle();
+    Navigator.of(context).pop(newVehicle);
+  }
+
+  void _deleteVehicle(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Delete vehicle?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                FlatButton(
+                    child: Text('Yes'),
+                    onPressed: () => {
+                          Navigator.of(context).pop(),
+                          Navigator.of(context).pop(widget.vehicle?.reference),
+                        }),
+              ],
+            ));
   }
 
   Future<bool> _onWillPop() {
+    if(createVehicle() == widget.vehicle){
+      return Future.value(true);
+    }
     return showDialog(
             context: context,
             builder: (context) => AlertDialog(

@@ -1,7 +1,7 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/pages/LoginScreen.dart';
-import 'package:basic_app/pages/SplashScreen.dart';
-import 'package:basic_app/pages/VehicleMainPage.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/pages/LoginScreen.dart';
+import 'package:Car_Maintenance/pages/SplashScreen.dart';
+import 'package:Car_Maintenance/pages/VehicleMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: _handleCurrentScreen(),
+      home: _handleCurrentScreen(context),
         //
     );
   }
 }
 
-Widget _handleCurrentScreen() {
+Widget _handleCurrentScreen(BuildContext context) {
   return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {

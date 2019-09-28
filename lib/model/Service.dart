@@ -76,4 +76,7 @@ class Service{
     }
     return 'airFilter';
   }
+
+  bool operator ==(o) => o is Service && o.date == date && o.location == location && o.notes == notes && o.odometer == odometer && o.serviceType == serviceType && o.user == user;
+        int get hashCode => this.hashCode;
 }

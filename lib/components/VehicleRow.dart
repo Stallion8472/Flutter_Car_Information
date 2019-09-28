@@ -1,9 +1,10 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/model/AppState.dart';
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/pages/EditVehiclePage.dart';
-import 'package:basic_app/pages/VehicleServices.dart';
-import 'package:basic_app/services/vehicleInformationBloc.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/model/AppState.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
+import 'package:Car_Maintenance/pages/EditVehiclePage.dart';
+import 'package:Car_Maintenance/pages/VehicleServices.dart';
+import 'package:Car_Maintenance/services/vehicleInformationBloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,7 +24,7 @@ class VehicleRow extends StatelessWidget {
           onTap: () => {
             AppStateContainer.of(context).updateState(AppState(
                 AppStateContainer.of(context).state.loggedInUser,
-                vehicle.reference.documentID)),
+                vehicle.reference.path)),
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -80,17 +81,15 @@ class VehicleRow extends StatelessWidget {
   }
 
   _editVehicle(BuildContext context, {Vehicle vehicle}) async {
-    final Vehicle result = await Navigator.push(
+    var returnedVehicle = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => EditVehiclePage(vehicle: vehicle)));
-    if (result != null) {
-      if (vehicle != null) {
-        _vehicleInformationBloc.updateVehicle(result,
-            documentID: result.reference.documentID);
-      } else {
-        _vehicleInformationBloc.updateVehicle(result);
-      }
+    if (returnedVehicle is Vehicle) {
+        _vehicleInformationBloc.updateVehicle(returnedVehicle);
+    }
+    else if (returnedVehicle is DocumentReference){
+      _vehicleInformationBloc.deleteVehicle(returnedVehicle);
     }
   }
 }

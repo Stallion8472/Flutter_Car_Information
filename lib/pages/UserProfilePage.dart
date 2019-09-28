@@ -1,5 +1,5 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/services/auth.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -23,7 +23,7 @@ class UserProfilePage extends StatelessWidget {
                   Text("User Picture",
                       style:
                           TextStyle(fontSize: 45, fontWeight: FontWeight.bold)),
-                  Text(AppStateContainer.of(context).state.loggedInUser,
+                  Text(AppStateContainer.of(context).state?.loggedInUser ?? "",
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                 ],

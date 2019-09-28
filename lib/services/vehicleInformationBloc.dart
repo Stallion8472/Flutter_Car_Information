@@ -1,5 +1,7 @@
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/services/repository.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
+import 'package:Car_Maintenance/services/auth.dart';
+import 'package:Car_Maintenance/services/firebaseRepository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class VehicleInformationBloc{
@@ -14,17 +16,31 @@ class VehicleInformationBloc{
 
   Observable<List<Vehicle>> get vehiclesObservable => _vehicles.stream;
 
-  getVehicles() async {
-    List<Vehicle> vehicles = await _repository.getVehicles();
-    _vehicles.sink.add(vehicles);
+  getVehicles(String userEmail) async {
+    if(userEmail != null){
+      List<DocumentSnapshot> documents = await _repository.get('vehicles', userEmail);
+      List<Vehicle> vehicles = List();
+      for (var document in documents) {
+        vehicles.add(Vehicle.fromSnapshot(document));
+      }
+      _vehicles.sink.add(vehicles);
+    }
+    else{
+      Auth.signOut();
+    }
   }
 
-  updateVehicle(Vehicle vehicle, {String documentID}) {
-    _repository.updateVehicle(vehicle, documentID: documentID);
+  updateVehicle(Vehicle vehicle) {
+    Map<String, dynamic> map = Map();
+    map['year'] = vehicle.year;
+    map['make'] = vehicle.make;
+    map['model'] = vehicle.model;
+    map['owner'] = vehicle.user;
+    _repository.update('vehicle', map, vehicle.reference);
   }
 
-  int get vehicleCount {
-    return vehicles.length;
+  deleteVehicle(DocumentReference vehicle){
+    _repository.delete('vehicle', vehicle.documentID);
   }
 
   dispose() {

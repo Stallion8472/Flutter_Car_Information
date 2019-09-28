@@ -1,16 +1,13 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/model/Service.dart';
-import 'package:basic_app/services/servicesBloc.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/model/Service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class EditServicePage extends StatefulWidget {
   final Service service;
-  final ServicesBloc _servicesBloc;
 
-  EditServicePage(this.service, this._servicesBloc, {Key key})
-      : super(key: key);
+  EditServicePage({this.service, Key key}) : super(key: key);
 
   @override
   _EditServicePageState createState() => _EditServicePageState();
@@ -21,15 +18,17 @@ class _EditServicePageState extends State<EditServicePage> {
   final notesController = TextEditingController();
   final serviceTypeController = ServiceTypeController();
   final locationController = TextEditingController();
-  Timestamp dateController = Timestamp.now();
+  Timestamp dateController;
   DateFormat usFormat = DateFormat('MM-dd-yyyy');
 
   @override
   void initState() {
-    odometerController.text = widget.service.odometer.toString();
-    notesController.text = widget.service.notes;
-    serviceTypeController.value = widget.service.serviceType;
-    locationController.text = widget.service.location;
+    odometerController.text = widget.service?.odometer?.toString() ?? "0";
+    notesController.text = widget.service?.notes ?? "";
+    serviceTypeController.value =
+        widget.service?.serviceType ?? ServiceType.airFilter;
+    locationController.text = widget.service?.location ?? "";
+    dateController = Timestamp.fromDate(widget.service.date.toDate());
     super.initState();
   }
 
@@ -50,6 +49,12 @@ class _EditServicePageState extends State<EditServicePage> {
         appBar: AppBar(
           title: Text("Details"),
           actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                _deleteService(context);
+              },
+              icon: Icon(Icons.delete),
+            ),
             IconButton(
               onPressed: () {
                 _saveAndClose(context);
@@ -121,8 +126,8 @@ class _EditServicePageState extends State<EditServicePage> {
     );
   }
 
-  void _saveAndClose(BuildContext context) {
-    Service newService = Service(
+  Service createService() {
+    return Service(
         dateController,
         int.parse(odometerController.text),
         serviceTypeController.value,
@@ -131,12 +136,40 @@ class _EditServicePageState extends State<EditServicePage> {
         AppStateContainer.of(context).state.loggedInUser,
         Firestore.instance
             .document(AppStateContainer.of(context).state.selectedVehicle),
-        reference: widget.service.reference ?? null);
-    widget._servicesBloc.updateService(newService);
-    Navigator.of(context).pop();
+        reference: widget.service?.reference ?? null);
+  }
+
+  void _saveAndClose(BuildContext context) {
+    var newService = createService();
+    Navigator.of(context).pop(newService);
+  }
+
+  void _deleteService(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Delete service?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                FlatButton(
+                    child: Text('Yes'),
+                    onPressed: () => {
+                          Navigator.of(context).pop(),
+                          Navigator.of(context).pop(widget.service?.reference),
+                        }),
+              ],
+            ));
   }
 
   Future<bool> _onWillPop() {
+    var temp = createService();
+    if(temp == widget.service)
+    {
+      return Future.value(true);
+    }
     return showDialog(
             context: context,
             builder: (context) => AlertDialog(

@@ -1,16 +1,16 @@
-import 'package:basic_app/AppStateContainer.dart';
-import 'package:basic_app/components/VehicleRow.dart';
-import 'package:basic_app/model/Vehicle.dart';
-import 'package:basic_app/services/vehicleInformationBloc.dart';
+import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/components/VehicleRow.dart';
+import 'package:Car_Maintenance/model/Vehicle.dart';
+import 'package:Car_Maintenance/services/vehicleInformationBloc.dart';
 import 'package:flutter/material.dart';
 
 class VehicleListPage extends StatelessWidget {
   final VehicleInformationBloc _vehicleInformationBloc =
-      new VehicleInformationBloc();
+      VehicleInformationBloc();
 
   @override
   Widget build(BuildContext context) {
-    _vehicleInformationBloc.getVehicles();
+    _vehicleInformationBloc.getVehicles(AppStateContainer.of(context).state?.loggedInUser);
     return StreamBuilder(
       stream: _vehicleInformationBloc.vehiclesObservable,
       builder: (context, AsyncSnapshot<List<Vehicle>> snapshot) {
