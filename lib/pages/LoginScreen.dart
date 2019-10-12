@@ -113,6 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 child: TextFormField(
                   controller: passwordTextController,
+                  obscureText: true,
                   validator: (value) {
                     if (value.isEmpty) {
                       return "Please enter a password";

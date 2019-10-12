@@ -8,10 +8,10 @@ class VehicleInformationBloc{
   List<Vehicle> vehicles;
   Repository _repository = Repository();
 
-  BehaviorSubject<List<Vehicle>> _vehicles;
+  PublishSubject<List<Vehicle>> _vehicles;
 
   VehicleInformationBloc(){
-    _vehicles = new BehaviorSubject();
+    _vehicles = new PublishSubject();
   }
 
   Observable<List<Vehicle>> get vehiclesObservable => _vehicles.stream;

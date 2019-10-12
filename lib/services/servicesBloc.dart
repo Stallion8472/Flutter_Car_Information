@@ -7,10 +7,10 @@ class ServicesBloc{
   List<Service> services;
   Repository _repository = Repository();
 
-  BehaviorSubject<List<Service>> _services;
+  PublishSubject<List<Service>> _services;
 
   ServicesBloc(){
-    _services = new BehaviorSubject();
+    _services = new PublishSubject();
   }
 
   Observable<List<Service>> get servicesObservable => _services.stream;

@@ -7,15 +7,33 @@ import 'package:Car_Maintenance/services/servicesBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class VehicleServices extends StatelessWidget {
-  final ServicesBloc _servicesBloc = ServicesBloc();
+class VehicleServices extends StatefulWidget {
   final Vehicle _vehicle;
 
   VehicleServices(this._vehicle);
 
   @override
+  _VehicleServicesState createState() => _VehicleServicesState();
+}
+
+class _VehicleServicesState extends State<VehicleServices> {
+  final ServicesBloc _servicesBloc = ServicesBloc();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var loggedInUser = AppStateContainer.of(context).state.loggedInUser;
+    _servicesBloc.getServices(loggedInUser);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _servicesBloc.dispose();
+  }
+
+  @override
   build(BuildContext context) {
-    _servicesBloc.getServices(AppStateContainer.of(context).state.loggedInUser);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: StreamBuilder(
@@ -26,12 +44,20 @@ class VehicleServices extends StatelessWidget {
                 slivers: <Widget>[
                   SliverAppBar(
                     title: Text(
-                      '${_vehicle.year.toString().substring(2)} ${_vehicle.make} ${_vehicle.model}',
+                      '${widget._vehicle.year.toString().substring(2)} ${widget._vehicle.make} ${widget._vehicle.model}',
                       style: TextStyle(fontSize: 25),
                     ),
                     pinned: true,
                     // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Placeholder(),
+                    flexibleSpace: Container(
+                      color: Colors.green,
+                      child: SizedBox.expand(
+                          child: Container(
+                                  color: Colors.grey[200],
+                                  margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                              child: Image.asset(
+                                  widget._vehicle.getVehicleImage(),scale: 15,fit: BoxFit.contain,))),
+                    ),
                     expandedHeight: 200,
                   ),
                   SliverList(delegate: _listDelegate(snapshot, context)),
@@ -92,8 +118,7 @@ class VehicleServices extends StatelessWidget {
             MaterialPageRoute(builder: (context) => EditServicePage()));
     if (returnedService is Service) {
       _servicesBloc.updateService(returnedService);
-    }
-    else if(returnedService is DocumentReference){
+    } else if (returnedService is DocumentReference) {
       _servicesBloc.deleteService(returnedService);
     }
   }
