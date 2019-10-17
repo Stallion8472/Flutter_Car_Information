@@ -1,6 +1,5 @@
 import 'package:Car_Maintenance/model/Service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class ServiceRow extends StatelessWidget {
@@ -20,7 +19,7 @@ class ServiceRow extends StatelessWidget {
           leading: Icon(getIcon(service.serviceType)),
           title: Column(
             children: <Widget>[
-              Text('Type: ${service.serviceType.toString().split('.').last}'),
+              Text('Type: ${Service.serviceTypeToString(service.serviceType)}'),
               Text('Date: ${usFormat.format(service.date.toDate())}'),
             ],
           ),
@@ -32,35 +31,29 @@ class ServiceRow extends StatelessWidget {
 
   IconData getIcon(ServiceType serviceType) {
     switch (serviceType) {
+      case ServiceType.oilChange:
+        return Icons.ac_unit;
+        break;
       case ServiceType.airFilter:
         return Icons.ac_unit;
         break;
-      case ServiceType.oil:
-        return FontAwesomeIcons.oilCan;
+      case ServiceType.newTires:
+        return Icons.ac_unit;
         break;
-      case ServiceType.tires:
-        return FontAwesomeIcons.tired;
+      case ServiceType.balanceAndRotate:
+        return Icons.ac_unit;
         break;
-      case ServiceType.a:
-        // TODO: Handle this case.
+      case ServiceType.transmissionFluid:
+        return Icons.ac_unit;
         break;
-      case ServiceType.b:
-        // TODO: Handle this case.
+      case ServiceType.wiperFluid:
+        return Icons.ac_unit;
         break;
-      case ServiceType.c:
-        // TODO: Handle this case.
+      case ServiceType.newBattery:
+        return Icons.ac_unit;
         break;
-      case ServiceType.d:
-        // TODO: Handle this case.
-        break;
-      case ServiceType.e:
-        // TODO: Handle this case.
-        break;
-      case ServiceType.f:
-        // TODO: Handle this case.
-        break;
-      case ServiceType.g:
-        // TODO: Handle this case.
+      default:
+        return Icons.ac_unit;
         break;
     }
   }

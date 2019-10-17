@@ -16,7 +16,7 @@ class EditServicePage extends StatefulWidget {
 class _EditServicePageState extends State<EditServicePage> {
   final odometerController = TextEditingController();
   final notesController = TextEditingController();
-  final serviceTypeController = ServiceTypeController();
+  String serviceTypeController;
   final locationController = TextEditingController();
   Timestamp dateController;
   DateFormat usFormat = DateFormat('MM-dd-yyyy');
@@ -25,10 +25,19 @@ class _EditServicePageState extends State<EditServicePage> {
   void initState() {
     odometerController.text = widget.service?.odometer?.toString() ?? "0";
     notesController.text = widget.service?.notes ?? "";
-    serviceTypeController.value =
-        widget.service?.serviceType ?? ServiceType.airFilter;
+    if(widget.service?.serviceType != null){
+      serviceTypeController = Service.serviceTypeToString(widget.service.serviceType);
+    }
+    else{
+      serviceTypeController = "Air Filter";
+    }
     locationController.text = widget.service?.location ?? "";
-    dateController = Timestamp.fromDate(widget.service.date.toDate());
+    if(widget.service?.date != null){
+      dateController = Timestamp.fromDate(widget.service.date.toDate());
+    }
+    else{
+      dateController = Timestamp.now();
+    }
     super.initState();
   }
 
@@ -36,7 +45,6 @@ class _EditServicePageState extends State<EditServicePage> {
   void dispose() {
     odometerController.dispose();
     notesController.dispose();
-    serviceTypeController.dispose();
     locationController.dispose();
     super.dispose();
   }
@@ -103,7 +111,7 @@ class _EditServicePageState extends State<EditServicePage> {
                         GestureDetector(
                           onTap: showSelection,
                           behavior: HitTestBehavior.translucent,
-                          child: Text(serviceTypeController.type),
+                          child: Text(serviceTypeController),
                         )
                       ],
                     ),
@@ -130,7 +138,7 @@ class _EditServicePageState extends State<EditServicePage> {
     return Service(
         dateController,
         int.parse(odometerController.text),
-        serviceTypeController.value,
+        Service.stringToServiceType(serviceTypeController),
         locationController.text,
         notesController.text,
         AppStateContainer.of(context).state.loggedInUser,
@@ -194,11 +202,11 @@ class _EditServicePageState extends State<EditServicePage> {
       serviceTypeWidgets.add(SimpleDialogOption(
           onPressed: () {
             setState(() {
-              serviceTypeController.value = s;
+              serviceTypeController = Service.serviceTypeToString(s);
             });
             Navigator.of(context).pop(true);
           },
-          child: Text(s.toString().split('.').last)));
+          child: Text(Service.serviceTypeToString(s))));
       if (s != ServiceType.values.last) {
         serviceTypeWidgets.add(Divider(color: Colors.black));
       }
@@ -229,11 +237,4 @@ class _EditServicePageState extends State<EditServicePage> {
               Timestamp(chosenDate.second, chosenDate.second * 1000);
         }));
   }
-}
-
-class ServiceTypeController extends ValueNotifier<ServiceType> {
-  ServiceTypeController({ServiceType value})
-      : super(value == null ? value = ServiceType.airFilter : value = value);
-
-  String get type => value.toString().split('.').last;
 }

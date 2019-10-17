@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum ServiceType{oil, airFilter, tires,a,b,c,d,e,f,g}
+enum ServiceType{oilChange, airFilter, newTires, balanceAndRotate, transmissionFluid, wiperFluid, newBattery}
 
 class Service{
   final Timestamp date;
@@ -34,47 +34,43 @@ class Service{
 
   static ServiceType stringToServiceType(String type) {
     switch (type) {
-      case 'airFilter':
+      case 'Air Filter':
         return ServiceType.airFilter;
-      case 'oil':
-        return ServiceType.oil;
-      case 'tires':
-        return ServiceType.tires;
+      case 'Oil Change':
+        return ServiceType.oilChange;
+      case 'New Tires':
+        return ServiceType.newTires;
     }
     return ServiceType.airFilter;
   }
 
-  String serviceTypeToString(ServiceType type){
+  static String serviceTypeToString(ServiceType type){
     switch(type){
+      case ServiceType.oilChange:
+        return "Oil Change";
+        break;
       case ServiceType.airFilter:
-        return 'airFilter';
-      case ServiceType.oil:
-        return 'oil';
-      case ServiceType.tires:
-        return 'tires';
-      case ServiceType.a:
-        // TODO: Handle this case.
+        return "Air Filter";
         break;
-      case ServiceType.b:
-        // TODO: Handle this case.
+      case ServiceType.newTires:
+        return "New Tires";
         break;
-      case ServiceType.c:
-        // TODO: Handle this case.
+      case ServiceType.balanceAndRotate:
+        return "Balanc And Rotate Tires";
         break;
-      case ServiceType.d:
-        // TODO: Handle this case.
+      case ServiceType.transmissionFluid:
+        return "Transmission Fluid";
         break;
-      case ServiceType.e:
-        // TODO: Handle this case.
+      case ServiceType.wiperFluid:
+        return "Wiper Fluid";
         break;
-      case ServiceType.f:
-        // TODO: Handle this case.
+      case ServiceType.newBattery:
+        return "New Battery";
         break;
-      case ServiceType.g:
-        // TODO: Handle this case.
+      default:
+        return "Air Filter";
         break;
     }
-    return 'airFilter';
   }
 
   bool operator ==(o) => o is Service && o.date == date && o.location == location && o.notes == notes && o.odometer == odometer && o.serviceType == serviceType && o.user == user;

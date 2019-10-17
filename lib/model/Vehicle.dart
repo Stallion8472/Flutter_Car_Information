@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 enum Makes{ Pontiac, Ford, Hyundai }
 
@@ -37,6 +40,19 @@ class Vehicle{
         break;
       default:
         return "";
+    }
+  }
+
+  Color getVehicleColor(){
+    switch (this.make) {
+      case "Pontiac":
+        return Colors.red;
+        break;
+      case "Ford":
+        return Colors.indigo[600];
+        break;
+      default:
+        return Colors.green;
     }
   }
 }

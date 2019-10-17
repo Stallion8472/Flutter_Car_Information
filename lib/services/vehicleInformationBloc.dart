@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class VehicleInformationBloc{
-  List<Vehicle> vehicles;
   Repository _repository = Repository();
 
   PublishSubject<List<Vehicle>> _vehicles;

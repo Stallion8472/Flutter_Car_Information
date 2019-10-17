@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ServicesBloc{
-  List<Service> services;
   Repository _repository = Repository();
 
   PublishSubject<List<Service>> _services;
@@ -28,7 +27,7 @@ class ServicesBloc{
     Map<String, dynamic> map = Map();
     map['date'] = service.date;
     map['odometer'] = service.odometer;
-    map['serviceType'] = service.serviceTypeToString(service.serviceType);
+    map['serviceType'] = Service.serviceTypeToString(service.serviceType);
     map['location'] = service.location;
     map['notes'] = service.notes;
     map['user'] = service.user;
