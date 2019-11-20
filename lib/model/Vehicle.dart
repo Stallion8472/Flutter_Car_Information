@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 enum Makes{ Pontiac, Ford, Hyundai }
 
@@ -28,31 +25,4 @@ class Vehicle{
 
         bool operator ==(o) => o is Vehicle && o.make == make && o.model == model && o.user == user && o.year == year;
         int get hashCode => this.hashCode;
-  
-  String getVehicleImage(){
-    var imagePath = "lib/assets/images/";
-    switch (this.make) {
-      case "Pontiac":
-        return imagePath + "pontiacImage.png";
-        break;
-      case "Ford":
-        return imagePath + "fordImage.png";
-        break;
-      default:
-        return "";
-    }
-  }
-
-  Color getVehicleColor(){
-    switch (this.make) {
-      case "Pontiac":
-        return Colors.red;
-        break;
-      case "Ford":
-        return Colors.indigo[600];
-        break;
-      default:
-        return Colors.green;
-    }
-  }
 }

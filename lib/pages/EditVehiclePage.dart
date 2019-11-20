@@ -58,34 +58,42 @@ class _EditVehiclePageState extends State<EditVehiclePage> {
             )
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              color: Colors.white,
-              child: ListView(
-                children: <Widget>[
-                  TextField(
-                    controller: yearController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'Year'),
-                  ),
-                  TextField(
-                    controller: makeController,
-                    decoration: InputDecoration(labelText: 'Make'),
-                  ),
-                  TextField(
-                    controller: modelController,
-                    decoration: InputDecoration(labelText: 'Model'),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Comments'),
-                  ),
-                ],
+        body: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: TextField(
+                style: TextStyle(fontSize: 20),
+                controller: yearController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Year'),
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                style: TextStyle(fontSize: 20),
+                controller: makeController,
+                decoration: InputDecoration(labelText: 'Make'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                style: TextStyle(fontSize: 20),
+                controller: modelController,
+                decoration: InputDecoration(labelText: 'Model'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                style: TextStyle(fontSize: 20),
+                maxLines: 3,
+                decoration: InputDecoration(labelText: 'Comments'),
+              ),
+            ),
+          ],
         ),
       ),
     );

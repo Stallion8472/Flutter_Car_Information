@@ -14,8 +14,8 @@ class ServicesBloc{
 
   Observable<List<Service>> get servicesObservable => _services.stream;
 
-  getServices(String userEmail) async {
-    List<DocumentSnapshot> documents = await _repository.get('service', userEmail);
+  getServices() async {
+    List<DocumentSnapshot> documents = await _repository.get('service');
     List<Service> services = List();
     for (var document in documents) {
       services.add(Service.fromSnapshot(document));

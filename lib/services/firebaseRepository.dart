@@ -1,20 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Repository {
 
-  Future<List<DocumentSnapshot>> get(String collection, String userEmail) async {
+  Future<List<DocumentSnapshot>> get(String collection) async {
     Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
-    if (userEmail.isNotEmpty) {
+    var user = await FirebaseAuth.instance.currentUser();
+    if(user != null){
       var snapshot = await Firestore.instance
           .collection(collection)
-          .where('user', isEqualTo: userEmail)
+          .where('user', isEqualTo: user.email)
           .getDocuments();
       return snapshot.documents;
     }
     else{
-      Auth.signOut();
       return null;
     }
   }

@@ -20,7 +20,8 @@ class Auth {
     return authResult.user.email;
   }
 
-  static void signOut() {
-    FirebaseAuth.instance.signOut();
+  static Future<void> signOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    AppStateContainer.of(context).updateState(AppState("", ""));
   }
 }

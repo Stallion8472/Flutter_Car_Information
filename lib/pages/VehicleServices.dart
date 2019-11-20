@@ -16,96 +16,61 @@ class VehicleServices extends StatefulWidget {
   _VehicleServicesState createState() => _VehicleServicesState();
 }
 
-class _VehicleServicesState extends State<VehicleServices>
-    with SingleTickerProviderStateMixin {
+class _VehicleServicesState extends State<VehicleServices> {
   final ServicesBloc _servicesBloc = ServicesBloc();
-  int _selectedTab = 0;
-
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 2);
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var loggedInUser = AppStateContainer.of(context).state.loggedInUser;
-    _servicesBloc.getServices(loggedInUser);
+    _servicesBloc.getServices();
   }
 
   @override
   void dispose() {
     super.dispose();
     _servicesBloc.dispose();
-    _tabController.dispose();
   }
 
   @override
   build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        title: Text(
+            '${widget._vehicle.year.toString().substring(2)} ${widget._vehicle.make} ${widget._vehicle.model}'),
+      ),
       body: StreamBuilder(
           stream: _servicesBloc.servicesObservable,
           builder: (context, AsyncSnapshot<List<Service>> snapshot) {
             if (snapshot.hasData) {
-              return CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    title: Text(
-                      '${widget._vehicle.year.toString().substring(2)} ${widget._vehicle.make} ${widget._vehicle.model}',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    backgroundColor: Colors.grey,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                        background: Image.asset(
-                            widget._vehicle.getVehicleImage(),
-                            fit: BoxFit.contain)),
-                    expandedHeight: 200,
-                    bottom: TabBar(
-                      onTap: (tab) => {
-                        setState(() {
-                          _tabController.animateTo(tab);
-                          _selectedTab = tab;
-                        })
-                      },
-                      labelPadding: EdgeInsets.zero,
-                      indicatorColor: widget._vehicle.getVehicleColor(),
-                      tabs: <Tab>[
-                        Tab(text: 'Services'),
-                        Tab(text: 'Information'),
-                      ],
-                      controller: _tabController,
-                    ),
-                  ),
-                  SliverList(delegate: _buildBody(snapshot, context)),
-                ],
-              );
+              return _buildBody(snapshot, context);
             } else {
               return LinearProgressIndicator();
             }
           }),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: widget._vehicle.getVehicleColor(),
-        onPressed: () => _editService(context),
-        child: Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            IconButton(icon: Icon(Icons.menu), onPressed: () => {}),
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () => {},
+            )
+          ],
+        ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _editService(context),
+        icon: Icon(Icons.add),
+        label: Text("Add Service"),
+        elevation: 4,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  SliverChildDelegate _buildBody(
-      AsyncSnapshot<List<Service>> snapshot, BuildContext context) {
-    if (_selectedTab == 0) {
-      return _serviceListDelegate(snapshot, context);
-    } else {
-      return _informationListDelegate();
-    }
-  }
-
-  SliverChildDelegate _serviceListDelegate(
+  Widget _buildBody(
       AsyncSnapshot<List<Service>> snapshot, BuildContext context) {
     snapshot.data.sort((a, b) => a.odometer.compareTo(b.odometer));
     List<Widget> widgets = List();
@@ -119,33 +84,16 @@ class _VehicleServicesState extends State<VehicleServices>
       }
     }
     if (widgets.length == 0) {
-      return SliverChildListDelegate.fixed(<Widget>[
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-            child: Text(
-              "No service have been added for the selected vehicle",
-              style: TextStyle(fontSize: 30),
-              textAlign: TextAlign.center,
-            ))
-      ]);
+      return Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Text(
+            "No service have been added for the selected vehicle",
+            style: TextStyle(fontSize: 30),
+            textAlign: TextAlign.center,
+          ));
     } else {
-      return SliverChildListDelegate.fixed(widgets);
+      return ListView(children: widgets);
     }
-  }
-
-  SliverChildDelegate _informationListDelegate() {
-    return SliverChildListDelegate.fixed(<Widget>[
-      Text(
-        "Oil Type: 10W - 30",
-        style: TextStyle(fontSize: 30),
-        textAlign: TextAlign.center,
-      ),
-      Text(
-        "Oil Filter number: 123456",
-        style: TextStyle(fontSize: 30),
-        textAlign: TextAlign.center,
-      ),
-    ]);
   }
 
   _editService(BuildContext context, {Service service}) async {

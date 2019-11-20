@@ -2,6 +2,7 @@ import 'package:Car_Maintenance/AppStateContainer.dart';
 import 'package:Car_Maintenance/model/AppState.dart';
 import 'package:Car_Maintenance/model/Vehicle.dart';
 import 'package:Car_Maintenance/pages/EditVehiclePage.dart';
+import 'package:Car_Maintenance/pages/VehicleInformationPage.dart';
 import 'package:Car_Maintenance/pages/VehicleServices.dart';
 import 'package:Car_Maintenance/services/vehicleInformationBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -72,9 +73,18 @@ class VehicleRow extends StatelessWidget {
                       ],
                     ),
                   ),
-                  IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () => _editVehicle(context, vehicle: vehicle)),
+                  Column(
+                    children: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.info_outline),
+                          onPressed: () =>
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => VehicleInformationPage(vehicle)))),
+                      IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () =>
+                              _editVehicle(context, vehicle: vehicle))
+                    ],
+                  )
                 ]),
           ),
         ));
@@ -86,9 +96,8 @@ class VehicleRow extends StatelessWidget {
         MaterialPageRoute(
             builder: (context) => EditVehiclePage(vehicle: vehicle)));
     if (returnedVehicle is Vehicle) {
-        _vehicleInformationBloc.updateVehicle(returnedVehicle);
-    }
-    else if (returnedVehicle is DocumentReference){
+      _vehicleInformationBloc.updateVehicle(returnedVehicle);
+    } else if (returnedVehicle is DocumentReference) {
       _vehicleInformationBloc.deleteVehicle(returnedVehicle);
     }
   }

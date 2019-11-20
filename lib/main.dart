@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MyCarMD',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark
       ),
       home: _handleCurrentScreen(context),
         //

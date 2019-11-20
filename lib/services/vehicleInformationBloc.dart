@@ -1,5 +1,4 @@
 import 'package:Car_Maintenance/model/Vehicle.dart';
-import 'package:Car_Maintenance/services/auth.dart';
 import 'package:Car_Maintenance/services/firebaseRepository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
@@ -15,18 +14,13 @@ class VehicleInformationBloc{
 
   Observable<List<Vehicle>> get vehiclesObservable => _vehicles.stream;
 
-  getVehicles(String userEmail) async {
-    if(userEmail != null){
-      List<DocumentSnapshot> documents = await _repository.get('vehicles', userEmail);
-      List<Vehicle> vehicles = List();
-      for (var document in documents) {
-        vehicles.add(Vehicle.fromSnapshot(document));
-      }
-      _vehicles.sink.add(vehicles);
+  getVehicles() async {
+    List<DocumentSnapshot> documents = await _repository.get('vehicles');
+    List<Vehicle> vehicles = List();
+    for (var document in documents) {
+      vehicles.add(Vehicle.fromSnapshot(document));
     }
-    else{
-      Auth.signOut();
-    }
+    _vehicles.sink.add(vehicles);
   }
 
   updateVehicle(Vehicle vehicle) {

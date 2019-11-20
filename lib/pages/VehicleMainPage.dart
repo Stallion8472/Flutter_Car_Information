@@ -22,7 +22,6 @@ class VehicleMainPage extends StatelessWidget {
         ],
       ),
       body: VehicleListPage(),
-      backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addNewItem(context),
         child: Icon(Icons.add),

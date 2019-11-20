@@ -1,5 +1,6 @@
 import 'package:Car_Maintenance/AppStateContainer.dart';
 import 'package:Car_Maintenance/model/Service.dart';
+import 'package:Car_Maintenance/services/customServiceTypesBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,21 +22,24 @@ class _EditServicePageState extends State<EditServicePage> {
   Timestamp dateController;
   DateFormat usFormat = DateFormat('MM-dd-yyyy');
 
+  final customServiceController = TextEditingController();
+  final CustomServiceTypesBloc _customServiceTypesBloc =
+      CustomServiceTypesBloc();
+
   @override
   void initState() {
     odometerController.text = widget.service?.odometer?.toString() ?? "0";
     notesController.text = widget.service?.notes ?? "";
-    if(widget.service?.serviceType != null){
-      serviceTypeController = Service.serviceTypeToString(widget.service.serviceType);
-    }
-    else{
+    if (widget.service?.serviceType != null) {
+      serviceTypeController =
+          Service.serviceTypeToString(widget.service.serviceType);
+    } else {
       serviceTypeController = "Air Filter";
     }
     locationController.text = widget.service?.location ?? "";
-    if(widget.service?.date != null){
+    if (widget.service?.date != null) {
       dateController = Timestamp.fromDate(widget.service.date.toDate());
-    }
-    else{
+    } else {
       dateController = Timestamp.now();
     }
     super.initState();
@@ -46,6 +50,7 @@ class _EditServicePageState extends State<EditServicePage> {
     odometerController.dispose();
     notesController.dispose();
     locationController.dispose();
+    customServiceController.dispose();
     super.dispose();
   }
 
@@ -59,76 +64,101 @@ class _EditServicePageState extends State<EditServicePage> {
           actions: <Widget>[
             IconButton(
               onPressed: () {
-                _deleteService(context);
+                _deleteService();
               },
               icon: Icon(Icons.delete),
             ),
             IconButton(
               onPressed: () {
-                _saveAndClose(context);
+                _saveAndClose();
               },
               icon: Icon(Icons.save),
             )
           ],
         ),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: ListView(
-              children: <Widget>[
-                TextField(
-                  controller: odometerController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Odometer'),
-                ),
-                Container(
+        body: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: odometerController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Odometer'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: showDate,
+                behavior: HitTestBehavior.translucent,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                          style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(4)),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
                         Text(
                           'Date: ',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        GestureDetector(
-                          onTap: showDate,
-                          behavior: HitTestBehavior.translucent,
-                          child: Text(usFormat.format(dateController.toDate())),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      children: <Widget>[
                         Text(
-                          'Service Type: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          usFormat.format(dateController.toDate()),
                         ),
-                        GestureDetector(
-                          onTap: showSelection,
-                          behavior: HitTestBehavior.translucent,
-                          child: Text(serviceTypeController),
-                        )
                       ],
                     ),
                   ),
                 ),
-                TextField(
-                  controller: locationController,
-                  decoration: InputDecoration(labelText: 'Location'),
-                ),
-                TextField(
-                  controller: notesController,
-                  maxLines: 5,
-                  decoration: InputDecoration(labelText: 'Notes'),
-                ),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                  onTap: () => showServicesDialog(context),
+                  behavior: HitTestBehavior.translucent,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Colors.black,
+                            width: 1,
+                            style: BorderStyle.solid),
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            'Service Type: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            serviceTypeController,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: locationController,
+                decoration: InputDecoration(labelText: 'Location'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: notesController,
+                maxLines: 5,
+                decoration: InputDecoration(labelText: 'Notes'),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -147,12 +177,12 @@ class _EditServicePageState extends State<EditServicePage> {
         reference: widget.service?.reference ?? null);
   }
 
-  void _saveAndClose(BuildContext context) {
+  void _saveAndClose() {
     var newService = createService();
     Navigator.of(context).pop(newService);
   }
 
-  void _deleteService(BuildContext context) {
+  void _deleteService() {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -174,8 +204,7 @@ class _EditServicePageState extends State<EditServicePage> {
 
   Future<bool> _onWillPop() {
     var temp = createService();
-    if(temp == widget.service)
-    {
+    if (temp == widget.service) {
       return Future.value(true);
     }
     return showDialog(
@@ -196,28 +225,6 @@ class _EditServicePageState extends State<EditServicePage> {
         false;
   }
 
-  void showSelection() {
-    List<Widget> serviceTypeWidgets = List<Widget>();
-    for (ServiceType s in ServiceType.values) {
-      serviceTypeWidgets.add(SimpleDialogOption(
-          onPressed: () {
-            setState(() {
-              serviceTypeController = Service.serviceTypeToString(s);
-            });
-            Navigator.of(context).pop(true);
-          },
-          child: Text(Service.serviceTypeToString(s))));
-      if (s != ServiceType.values.last) {
-        serviceTypeWidgets.add(Divider(color: Colors.black));
-      }
-    }
-
-    showDialog(
-        context: context,
-        builder: (context) => SimpleDialog(
-            title: Text("Service Types"), children: serviceTypeWidgets));
-  }
-
   void showDate() {
     Future<DateTime> selectedDate = showDatePicker(
       context: context,
@@ -236,5 +243,80 @@ class _EditServicePageState extends State<EditServicePage> {
           dateController =
               Timestamp(chosenDate.second, chosenDate.second * 1000);
         }));
+  }
+
+  void showServicesDialog(BuildContext customContext) {
+    _customServiceTypesBloc.getServices();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                title: Text("Service Types"),
+                content: Container(
+                  width: 150,
+                  height: 300,
+                  child: StreamBuilder(
+                    stream: _customServiceTypesBloc.servicesObservable,
+                    builder: (context, AsyncSnapshot<List<String>> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return SimpleDialogOption(
+                                  onPressed: () {
+                                    setState(() {
+                                      serviceTypeController =
+                                          snapshot.data[index];
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(snapshot.data[index]));
+                            });
+                      } else {
+                        return LinearProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                      child: Text("New Service"),
+                      onPressed: () {
+                        setState(() {
+                          customServiceController.text = "";
+                        });
+
+                        showNewServiceTypePopup(customContext);
+                      }),
+                  FlatButton(
+                      child: Text("Close"),
+                      onPressed: () => Navigator.of(context).pop())
+                ]));
+  }
+
+  void showNewServiceTypePopup(BuildContext customContext) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Enter New Service Type"),
+              content: SingleChildScrollView(
+                child: TextField(controller: customServiceController),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Add"),
+                  onPressed: () {
+                    _customServiceTypesBloc.addService(customServiceController.text, AppStateContainer.of(context).state.loggedInUser);
+                    _customServiceTypesBloc.getServices();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
 }

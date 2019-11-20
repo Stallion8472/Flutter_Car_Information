@@ -14,11 +14,9 @@ class _VehicleListPageState extends State<VehicleListPage> {
       VehicleInformationBloc();
 
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
-    var loggedInUser = AppStateContainer.of(context).state?.loggedInUser;
-    _vehicleInformationBloc
-        .getVehicles(loggedInUser);
+    _vehicleInformationBloc.getVehicles();
   }
 
   @override

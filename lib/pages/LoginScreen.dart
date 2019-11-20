@@ -1,3 +1,4 @@
+import 'package:Car_Maintenance/AppStateContainer.dart';
 import 'package:Car_Maintenance/services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState(){
-    super.initState();
-    //userNameTextController.text = AppStateContainer.of(context).state.loggedInUser ?? "";
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userNameTextController.text = AppStateContainer.of(context).state?.loggedInUser ?? "";
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: <Widget>[
             Spacer(
-              flex: 1,
+              flex: 2,
             ),
             Text(
               "Car App",
@@ -63,12 +65,16 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Text("New User? Sign Up"),
           onPressed: () => setState(() {
                 isLogin = !isLogin;
+                userNameTextController.text = "";
+                passwordTextController.text = "";
               }));
     } else {
       return MaterialButton(
           child: Text("Returning User? Log in"),
           onPressed: () => setState(() {
                 isLogin = !isLogin;
+                userNameTextController.text = "";
+                passwordTextController.text = "";
               }));
     }
   }

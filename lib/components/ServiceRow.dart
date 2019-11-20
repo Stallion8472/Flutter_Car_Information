@@ -11,7 +11,6 @@ class ServiceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
       margin: EdgeInsets.all(3.0),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -19,11 +18,11 @@ class ServiceRow extends StatelessWidget {
           leading: Icon(getIcon(service.serviceType)),
           title: Column(
             children: <Widget>[
-              Text('Type: ${Service.serviceTypeToString(service.serviceType)}'),
-              Text('Date: ${usFormat.format(service.date.toDate())}'),
+              Text('${Service.serviceTypeToString(service.serviceType)}'),
+              Text('${usFormat.format(service.date.toDate())}'),
             ],
           ),
-          trailing: Text('Odometer: ${service.odometer.toString()}'),
+          trailing: Text('${service.odometer.toString()} miles'),
         ),
       ),
     );
