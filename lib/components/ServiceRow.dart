@@ -1,3 +1,4 @@
+import 'package:Car_Maintenance/HelperFunctions.dart';
 import 'package:Car_Maintenance/model/Service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +19,7 @@ class ServiceRow extends StatelessWidget {
           leading: Icon(getIcon(service.serviceType)),
           title: Column(
             children: <Widget>[
-              Text('${Service.serviceTypeToString(service.serviceType)}'),
+              Text('${HelperFunctions.enumToString(service.serviceType.toString())}'),
               Text('${usFormat.format(service.date.toDate())}'),
             ],
           ),

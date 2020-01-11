@@ -1,14 +1,16 @@
 import 'package:Car_Maintenance/AppStateContainer.dart';
+import 'package:Car_Maintenance/helperFunctions.dart';
 import 'package:Car_Maintenance/model/Service.dart';
-import 'package:Car_Maintenance/services/customServiceTypesBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class EditServicePage extends StatefulWidget {
   final Service service;
+  final Set<String> customServices;
 
-  EditServicePage({this.service, Key key}) : super(key: key);
+  EditServicePage({@required this.customServices, this.service, Key key})
+      : super(key: key);
 
   @override
   _EditServicePageState createState() => _EditServicePageState();
@@ -23,8 +25,6 @@ class _EditServicePageState extends State<EditServicePage> {
   DateFormat usFormat = DateFormat('MM-dd-yyyy');
 
   final customServiceController = TextEditingController();
-  final CustomServiceTypesBloc _customServiceTypesBloc =
-      CustomServiceTypesBloc();
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _EditServicePageState extends State<EditServicePage> {
     notesController.text = widget.service?.notes ?? "";
     if (widget.service?.serviceType != null) {
       serviceTypeController =
-          Service.serviceTypeToString(widget.service.serviceType);
+          HelperFunctions.enumToString(widget.service.serviceType.toString());
     } else {
       serviceTypeController = "Air Filter";
     }
@@ -231,12 +231,6 @@ class _EditServicePageState extends State<EditServicePage> {
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(DateTime.now().year + 2),
-      builder: (BuildContext context, Widget child) {
-        return Theme(
-          data: ThemeData.light(),
-          child: child,
-        );
-      },
     );
 
     selectedDate.then((chosenDate) => setState(() {
@@ -246,37 +240,24 @@ class _EditServicePageState extends State<EditServicePage> {
   }
 
   void showServicesDialog(BuildContext customContext) {
-    _customServiceTypesBloc.getServices();
+    List<Widget> customServiceWidgets = List<Widget>();
+    for (var service in widget.customServices) {
+      customServiceWidgets.add(SimpleDialogOption(
+        child: Text(service),
+        onPressed: () {
+          setState(() {
+            serviceTypeController = service;
+          });
+          Navigator.of(context).pop();
+        },
+      ));
+    }
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
                 title: Text("Service Types"),
-                content: Container(
-                  width: 150,
-                  height: 300,
-                  child: StreamBuilder(
-                    stream: _customServiceTypesBloc.servicesObservable,
-                    builder: (context, AsyncSnapshot<List<String>> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return SimpleDialogOption(
-                                  onPressed: () {
-                                    setState(() {
-                                      serviceTypeController =
-                                          snapshot.data[index];
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(snapshot.data[index]));
-                            });
-                      } else {
-                        return LinearProgressIndicator();
-                      }
-                    },
-                  ),
-                ),
+                content: SingleChildScrollView(
+                    child: ListBody(children: customServiceWidgets)),
                 actions: <Widget>[
                   FlatButton(
                       child: Text("New Service"),
@@ -305,8 +286,7 @@ class _EditServicePageState extends State<EditServicePage> {
                 FlatButton(
                   child: Text("Add"),
                   onPressed: () {
-                    _customServiceTypesBloc.addService(customServiceController.text, AppStateContainer.of(context).state.loggedInUser);
-                    _customServiceTypesBloc.getServices();
+                    widget.customServices.add(customServiceController.text);  
                     Navigator.of(context).pop();
                   },
                 ),

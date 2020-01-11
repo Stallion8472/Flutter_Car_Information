@@ -36,40 +36,15 @@ class Service{
     switch (type) {
       case 'Air Filter':
         return ServiceType.airFilter;
+        break;
       case 'Oil Change':
         return ServiceType.oilChange;
+        break;
       case 'New Tires':
         return ServiceType.newTires;
-    }
-    return ServiceType.airFilter;
-  }
-
-  static String serviceTypeToString(ServiceType type){
-    switch(type){
-      case ServiceType.oilChange:
-        return "Oil Change";
-        break;
-      case ServiceType.airFilter:
-        return "Air Filter";
-        break;
-      case ServiceType.newTires:
-        return "New Tires";
-        break;
-      case ServiceType.balanceAndRotate:
-        return "Balanc And Rotate Tires";
-        break;
-      case ServiceType.transmissionFluid:
-        return "Transmission Fluid";
-        break;
-      case ServiceType.wiperFluid:
-        return "Wiper Fluid";
-        break;
-      case ServiceType.newBattery:
-        return "New Battery";
         break;
       default:
-        return "Air Filter";
-        break;
+        return ServiceType.airFilter;
     }
   }
 

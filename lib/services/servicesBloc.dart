@@ -1,3 +1,4 @@
+import 'package:Car_Maintenance/helperFunctions.dart';
 import 'package:Car_Maintenance/model/Service.dart';
 import 'package:Car_Maintenance/services/firebaseRepository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,12 +28,13 @@ class ServicesBloc{
     Map<String, dynamic> map = Map();
     map['date'] = service.date;
     map['odometer'] = service.odometer;
-    map['serviceType'] = Service.serviceTypeToString(service.serviceType);
+    map['serviceType'] = HelperFunctions.enumToString(service.serviceType.toString());
     map['location'] = service.location;
     map['notes'] = service.notes;
     map['user'] = service.user;
     map['vehicle'] = service.vehicleReference;
     _repository.update('service', map, service.reference);
+    getServices();
   }
 
   deleteService(DocumentReference service){
